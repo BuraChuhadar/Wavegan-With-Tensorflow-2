@@ -208,17 +208,22 @@ def train(fps, args):
       save_summaries_secs=args.train_summary_secs) as sess:
     print('-' * 80)
     print('Training has started. Please use \'tensorboard --logdir={}\' to monitor.'.format(args.train_dir))
-    while True:
-      # Train discriminator
-      for i in xrange(args.wavegan_disc_nupdates):
-        sess.run(D_train_op)
+    num_epochs = 100  # Set the number of epochs you want to train
 
-        # Enforce Lipschitz constraint for WGAN
-        if D_clip_weights is not None:
-          sess.run(D_clip_weights)
+    for epoch in range(num_epochs):
+        print(f"Starting epoch {epoch + 1}/{num_epochs}")
 
-      # Train generator
-      sess.run(G_train_op)
+        # Train discriminator
+        for i in range(args.wavegan_disc_nupdates):
+            print(f"Running session {i}")
+            sess.run(D_train_op)
+
+            # Enforce Lipschitz constraint for WGAN
+            if D_clip_weights is not None:
+                sess.run(D_clip_weights)
+
+        # Train generator
+        sess.run(G_train_op)
 
 
 """
